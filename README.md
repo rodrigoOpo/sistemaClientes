@@ -14,7 +14,7 @@ Solución
 
 Demo
 1)Formulario Web --> 2)FastAPI --> 3)Excel automático -->4)PDF generado
-Excel yPDF se generan solos
+Excel y PDF se generan solos
 
 Set Up técnico
 -FastAPI(control de APIs)
@@ -22,3 +22,12 @@ Set Up técnico
 -Reportlab(PDF)
 -Uvicorn(servidor)
 -python-multipart??(para formularios)
+
+Datos
+-Clientes--> id(int) - nombre(str) - email(str) - numero telefono(str) - consulta_id(fk)
+-Consulta--> id(int) - titulo(str) - descripción(str) - cliente_id(fk)
+
+Response Schema
+Request Schema
+
+No db --> datos almacenados en excel

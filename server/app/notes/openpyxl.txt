@@ -1,0 +1,43 @@
+openpyxl: Automatizar tareas de Excel con Python
+
+openpyxl esta diseñado específicamente para ofrecer compatibilidad.
+La biblioteca funciona con varios formatos de archivos:
+    .xlsx - Cuaderno de trabajo Excel
+    .xlsm - Cuaderno de trabajo Excel con macros
+    .xltx - Plantilla Excel
+    .xltm - Plantilla Excel con macros
+
+INSTALAR E IMPORTAR openpyxl
+
+CONCEPTOS CLAVE Y TERMINOLOGÍA
+
+LECTURA DE ARCHIVOS EXCEL CON openpyxl
+
+#Carga y explora un cuaderno de trabajo
+#Iterar a través de los datos
+#Convertir a estructuras de datos Python
+
+ESCRIBIR ARCHIVOS EXCEL CON openpyxl
+
+#Crea un cuaderno de trabajo y escribe datos básicos
+#Modificar archivos Excel existentes
+#Añade datos dinámicamente
+
+FORMATO Y ESTILO EN EXCEL
+
+#Añade fuentes, bordes y alineación
+#Formato condicional
+
+FUNCIONES AVANZADAS
+
+#Añadir fórmulas
+#Insertar gráficos
+#Insertar imágenes
+
+GESTIÓN DE HOJAS, FILAS Y COLUMNAS
+
+#Crear y eliminar hojas
+#Cambiar el nombre de las hojas
+#Copiar hojas de ejercicios
+#Insertar y eliminar filas y COLUMNAS
+#Congelar paneles y añadir filtros

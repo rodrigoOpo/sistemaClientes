@@ -1,0 +1,74 @@
+to use the library execute the following command --> $ pip install python-multipart
+
+Another type of data that you can get from the front, instead of receiving a json you receive a whole
+file
+
+What is 'Form Data'??
+The way HTML forms (<form></form>) sends the data to the server normally uses a "special" encoding
+for that data, it is different from JSON 
+Data form form is normally encoded using the "media type" ('application/x-www-form-urlencoded') when it 
+does not include files
+But when the form include files,  it is encoded as ('multipart/form-data'). If you use File, FastAPI
+will knowit has to get the files from the correct part of the body.
+
+You can declare multiple File and Form parameters in a path operation, but you can not also declare 
+Body fields that you expect to receive from as JSON, as the request will have the body encoded using
+('multipart/form-data'). This is not a limitation of FastAPI, it is part of the protocols of HTTP
+
+
+FILE 
+You can define files to be uploaded by the client using File
+#Import it from fastapi
+    from fastapi import File, UploadFile
+    from typing import Annotated
+#Define File parameters
+Create file parameters the same way you would for Body or Form
+    (file: Annotated[bytes, File()])
+The file will be uploaded as 'form data'
+If you declare the type of your path operation function parameters as bytes, FastAPI will read the
+file for you and you will receive the contents as bytes
+This means that the whole content will be stored in memony. This will work for small files
+
+UPLOADED FILE
+Using UploadFile has several advanteges over bytes:
+-You don't have to use File() in the default value of the parameter
+-It uses a 'spooled' file. A file stored in memory up to a maximum size limit, and after passing this
+limit it will be stored in disk.
+-It will work well for for large files like images, videos, large binaries, etc. Without consuming all
+the memory
+-You can get metadata from the uploaded file
+
+Upload File has the following attributes:
+-filename: a str with the original file name that was uploaded
+-content_type: a str with the content type
+-file: a SpooledTemporaryFile. This is the actual Python file object that you can pass directly to
+other functions or libraries that except a "file-like" object.
+
+UploadFile has the following async methods:
+-write(data)--> Writes data (str or bytes) to the file.
+-read(size)--> Reads size (int) bytes/characters of the file.
+-seek(offset)--> Goes to the byte position offset(int) in the file. This is especially usefull if you
+run 'await myfile.read()' once and then need to read  the contents again
+-close()--> Closes the file
+All of the methods are async so you need to await them --> "contents = await myfile.read()"
+
+OPTIONAL FILE UPLOAD
+You can make a file optional by using standard type annotations and setting a default value of None:
+    (file: Annotated[bytes | None, File()] = None)
+
+UPLOAD FILE WITH ADDITIONAL METADATA
+You can also use File() with UploadFile, for example, to set additional metadata:
+    (file: Annotated[bytes, File(description="A file read as bytes")])
+
+MULTIPLE FILE UPLOADS
+It is possible to upload several files at the same time
+They would be associated to the same "form field" sent using "form data"
+To use that, declare a list of bytes or UploadFile.
+    (files: Annotated[list[bytes], File()])
+    (files: list[UploadFile])
+You will receive, as declared, a list of bytes or UploadFile
+
+MULTIPLE FILE UPLOADS WITH ADDITIONAL METADATA
+The same way as before, you can use File() to set additional parameters, even for UploadFile
+    (files: Annotated[list[bytes], File(description="Multiple files as bytes")],)
+    (files: Annotated[list[UploadFile], File(description="Multiple files as UploadFile")],)
