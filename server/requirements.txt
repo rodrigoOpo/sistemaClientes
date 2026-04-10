@@ -2,3 +2,4 @@ fastapi[all]
 openpyxl
 reportlab
 python-multipart
+pydantic
