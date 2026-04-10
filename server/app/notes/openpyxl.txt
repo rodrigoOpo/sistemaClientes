@@ -41,3 +41,11 @@ GESTIÓN DE HOJAS, FILAS Y COLUMNAS
 #Copiar hojas de ejercicios
 #Insertar y eliminar filas y COLUMNAS
 #Congelar paneles y añadir filtros
+
+Excel permite al usuario guardar los archivos en la nube de microsoft o en su dispositivo local.
+Con openpyxl no tenemos ningun problema si el workbook esta en local, la cosa se complica un poco
+cuando estan en la nube.
+openpyxl no puede abrir un archivo directamete desde una url de la nube porque necesita un archivo
+fisico en el sistema o un objeto en memoria(BytesIO)
+-Usar la API oficial de OneDrive/SharePoint. Usar la API de Microsoft Graph. Te permite autenticarte
+y descargar el contenido del archivo que luego puedes cargar en openpyxl usando BytesIO.

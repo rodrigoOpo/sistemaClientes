@@ -3,3 +3,6 @@ openpyxl
 reportlab
 python-multipart
 pydantic
+sqlalchemy
+psycopg2-binary
+dotenv
