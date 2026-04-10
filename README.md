@@ -36,6 +36,7 @@ No db --> datos almacenados en excel
 Pasos a seguir:
 Crear schemas para front
 Crear endpoint post para clientes
+
 Conectar nextjs con fastapi
 Mandar el nuevo cliente a excel 
 Mandar PDF a nuevo cliente

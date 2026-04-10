@@ -1,4 +1,8 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
+from ..schemas.request import Client
+from ..database import models
+from ..database.database import get_db
 
 router = APIRouter(
     tags=['Clients'],
@@ -6,5 +10,7 @@ router = APIRouter(
 )
 
 @router.post('/')
-def create_client():
-    return 
+def create_client(client : Client, db: Session = Depends(get_db)):
+    new_client = models.Client(name=client.name, email=client.email, phone_number=client.phone_number)
+    db.add(new_client)
+    db.commit() 
