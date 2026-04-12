@@ -1,11 +1,9 @@
-import Image from "next/image";
+import Form from "@/ui/Form";
 
 export default function Home() {
   return (
-    <>
-      <h1 className="text-9xl">
-        hola
-      </h1>
-    </>
+    <div className=" text-3xl bg-gray-300 h-svh">
+      <Form/>
+    </div>
   );
 }
