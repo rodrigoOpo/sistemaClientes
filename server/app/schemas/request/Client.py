@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 class Client(BaseModel):
     name:str
-    email:str
-    phone_number:str
+    email:EmailStr
+    phone:str
