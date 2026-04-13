@@ -3,19 +3,30 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { clientSchema } from "@/validations/clientSchema"
+import { useMutation } from "@tanstack/react-query"
+import { createClient } from "@/app/api"
+import { Client } from "@/validations/clientSchema"
 
 type Props = {}
 
 const Form = (props: Props) => {
 
-    const {register, handleSubmit, watch, formState: {errors}} = useForm({
+    const {register, handleSubmit} = useForm({
         resolver: zodResolver(clientSchema)
     })
+
+    const {mutate} = useMutation({
+      mutationFn: (client: Client) => createClient(client)
+    })
+
+    const onSubmit = (client: Client) => {
+      mutate(client)
+    }
 
   return (
     <>
     <form
-    onSubmit={handleSubmit(data => console.log(data))}
+    onSubmit={handleSubmit(onSubmit)}
     className='bg-gray-800 text-gray-300 flex flex-col gap-4 items-center mt-20 mx-60 rounded-2xl p-8'>
         <label htmlFor="name">name</label>
         <input type="text" id="name" className='rounded-xl hover:bg-gray-700'

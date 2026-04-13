@@ -7,3 +7,5 @@ export const clientSchema = z.object({
     }),
     phone: z.string()
 })
+
+export type Client = z.infer<typeof clientSchema>
