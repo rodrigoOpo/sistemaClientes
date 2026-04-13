@@ -60,6 +60,8 @@ coverage/
 # Python / FastAPI
 # =========================
 __pycache__/
+*.pyc
+*.pyo
 *.py[cod]
 *$py.class
 
