@@ -46,7 +46,7 @@ const ClientTable = (props: Props) => {
       <Table className="text-white mt-20 w-150 mx-10 md:w-300">
         <TableCaption>Clients Table</TableCaption>
         <TableHeader>
-          <TableRow>
+           <TableRow>
             <TableHead className="text-white">Invoice</TableHead>
             <TableHead className="text-white">Status</TableHead>
             <TableHead className="text-white">Method</TableHead>
