@@ -3,6 +3,14 @@ from .routers import Clients
 from .database.models import Client
 from .database.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
+import asyncio
+import asyncpg
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
 Base.metadata.create_all(bind=engine)
 
@@ -31,3 +39,21 @@ async def websocket_endpoint(ws: WebSocket):
             await ws.send_text(f"Echo: {data}")
     except:
         print("Client disconnect")
+
+
+async def listener():
+    conn = await asyncpg.connect(SQL_DATABASE_URL)
+
+    async def callback(connection, pid, channel, payload):
+        print(f"📡 Evento recibido en {channel}: {payload}")
+
+    await conn.add_listener("chat", callback)
+
+    print("👂 Escuchando canal 'chat'...")
+
+    while True:
+        await asyncio.sleep(3600)  # mantener vivo
+
+@app.on_event("startup")
+async def startup():
+    asyncio.create_task(listener())
