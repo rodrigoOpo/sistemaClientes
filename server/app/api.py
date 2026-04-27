@@ -41,15 +41,17 @@ async def websocket_endpoint(ws: WebSocket):
         print("Client disconnect")
 
 
+
+#El listener
 async def listener():
     conn = await asyncpg.connect(SQL_DATABASE_URL)
 
     async def callback(connection, pid, channel, payload):
         print(f"📡 Evento recibido en {channel}: {payload}")
 
-    await conn.add_listener("chat", callback)
+    await conn.add_listener("client_channel", callback)
 
-    print("👂 Escuchando canal 'chat'...")
+    print("👂 Escuchando canal 'client_channel'...")
 
     while True:
         await asyncio.sleep(3600)  # mantener vivo
