@@ -1,14 +1,12 @@
-from fastapi import FastAPI, Websocket, WebsocketDisconnect
-from .routers import Update_client
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from .routers import Clients
 from .database.models import Client
 from .database.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Set
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-listeners: Set[Websocket] = set()
 
 #For the table connection we need 2 technologies
 #We need them because the client will not ask for the data, so the database and later the api will send data to the client
@@ -22,4 +20,14 @@ app.add_middleware(
     allow_headers=['*']
 )
 
-app.include_router(Update_client.router)
+app.include_router(Clients.router)
+
+@app.websocket("/ws")
+async def websocket_endpoint(ws: WebSocket):
+    await ws.accept()
+    try:
+        while True:
+            data = await ws.receive_text()
+            await ws.send_text(f"Echo: {data}")
+    except:
+        print("Client disconnect")

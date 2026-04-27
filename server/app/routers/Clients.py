@@ -10,6 +10,8 @@ router = APIRouter(
     prefix='/clients'
 )
 
+
+#HTTP methods
 @router.post('/')
 def create_client(client : Client, db: Session = Depends(get_db)):
     #Tienes que usar la clase no el archivo por eso pongo dos veces Client(una por el archivo y otra por la clase)
