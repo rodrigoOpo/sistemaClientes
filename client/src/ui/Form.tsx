@@ -27,22 +27,24 @@ const Form = (props: Props) => {
     <>
     <form
     onSubmit={handleSubmit(onSubmit)}
-    className='bg-gray-800 text-gray-300 flex flex-col gap-4 items-center mt-20 mx-60 rounded-2xl p-8'>
-        <label htmlFor="name">name</label>
-        <input type="text" id="name" className='rounded-xl hover:bg-gray-700'
+    className='bg-black text-white border rounded-2xl border-gray-500 flex flex-col gap-4 items-center mt-20 mx-10 py-20 md:mt-20 md:mx-90 md:p-8'>
+        <input type="text" id="name" className='px-5 py-1 rounded-xl hover:border hover:border-mauve-500 bg-mauve-950'
+        placeholder="name"
         {...register('name')}/>
 
-        <label htmlFor="email">email</label>
-        <input type="email" id="email" className='rounded-xl hover:bg-gray-700'
+
+        <input type="email" id="email" className='px-5 py-1 rounded-xl hover:border hover:border-mauve-500 bg-mauve-950'
+        placeholder="email"
         {...register('email')}/>
 
-        <label htmlFor="phone">phone</label>
-        <input type="tel" id="phone" className='rounded-xl hover:bg-gray-700'
+
+        <input type="tel" id="phone" className='px-5 py-1 rounded-xl hover:border hover:border-mauve-500 bg-mauve-950'
+        placeholder="phone number"
         {...register('phone')}/>
 
         <button
         type='submit'
-        className='bg-gray-700 hover:bg-gray-600 font-bold py-1 px-2 rounded-xl'>
+        className='bg-black border border-mauve-600 rounded-2xl px-3 py-1 hover:bg-mauve-900'>
             submit
         </button>
     </form>
