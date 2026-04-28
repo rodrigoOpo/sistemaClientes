@@ -11,15 +11,18 @@ from contextlib import asynccontextmanager
 
 load_dotenv()
 
+
 SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
 Base.metadata.create_all(bind=engine)
+
+#It will store the data that we pass from the database to the client through ws
+queue = asyncio.Queue()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     asyncio.create_task(listener())
     yield
-
 
 app = FastAPI(lifespan=lifespan)
 
@@ -56,7 +59,7 @@ async def listener():
     async def callback(connection, pid, channel, payload):
         print(f"📡 Evento recibido en {channel}: {payload}")
 
-    await conn.add_listener("client_channel", callback)
+    await conn.add_listener("activity_channel", callback)
 
     print("👂 Escuchando canal 'client_channel'...")
 

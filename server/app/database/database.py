@@ -8,7 +8,10 @@ load_dotenv()
 
 SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
-engine = create_engine(SQL_DATABASE_URL)
+engine = create_engine(
+    SQL_DATABASE_URL,
+    connect_args={"sslmode": "require"}
+    )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
