@@ -7,6 +7,7 @@ import asyncio
 import asyncpg
 import os
 from dotenv import load_dotenv
+from contextlib import asynccontextmanager
 
 load_dotenv()
 
@@ -14,7 +15,13 @@ SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    asyncio.create_task(listener())
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 #For the table connection we need 2 technologies
 #We need them because the client will not ask for the data, so the database and later the api will send data to the client
@@ -56,6 +63,3 @@ async def listener():
     while True:
         await asyncio.sleep(3600)  # mantener vivo
 
-@app.on_event("startup")
-async def startup():
-    asyncio.create_task(listener())
