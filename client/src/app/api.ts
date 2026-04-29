@@ -9,7 +9,7 @@ export const createClient = async (client: Omit<Client, "_id">) => {
         body: JSON.stringify(client)
     }
 
-    const res = await fetch('http://localhost:8000/clients', options)
+    const res = await fetch('https://sistemaclientes-7ulo.onrender.com', options)
     const data = await res.json()
     return clientSchema.parse(data)
 
