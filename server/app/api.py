@@ -33,7 +33,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['https://sistema-clientes-six.vercel.app/'],
+    allow_origins=['https://sistema-clientes-six.vercel.app'],
     allow_methods=['*'],
     allow_headers=['*']
 )
