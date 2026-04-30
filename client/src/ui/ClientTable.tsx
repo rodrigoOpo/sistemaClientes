@@ -1,6 +1,10 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
+import {
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import {
   Table,
   TableBody,
@@ -11,62 +15,92 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-type Props = {}
+// 🧠 Tipo de datos (alineado con tu backend)
+type Client = {
+  name: string
+  email: string
+  phone: string
+}
 
-const ClientTable = (props: Props) => {
+// 🧠 Fetch inicial (HTTP)
+async function fetchClients(): Promise<Client[]> {
+  const res = await fetch("http://localhost:8000/clients")
 
+  if (!res.ok) {
+    throw new Error("Error fetching clients")
+  }
+
+  return res.json()
+}
+
+export default function ClientTable() {
   const socketRef = useRef<WebSocket | null>(null)
-  const [messages, setMessages] = useState([])
+  const queryClient = useQueryClient()
 
-  useEffect(() =>{
+  // 🧠 TanStack Query (estado base)
+  const {
+    data: clients = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["clients"],
+    queryFn: fetchClients,
+  })
+
+  useEffect(() => {
     const socket = new WebSocket("ws://localhost:8000/ws")
     socketRef.current = socket
 
     socket.onopen = () => {
-      console.log("Conectado")
-      socket.send("Hola Servidor")
+      console.log("🟢 WebSocket conectado")
     }
 
-    socket.onmessage = (event) => {
-      console.log("Mensaje: ", event.data)
+    socket.onmessage = () => {
+      console.log("📩 Evento recibido → invalidando query")
+
+      // 💥 AQUÍ está la magia tipo "refresh"
+      queryClient.invalidateQueries({ queryKey: ["clients"] })
     }
 
     socket.onclose = () => {
-      console.log("Desconectado")
+      console.log("🔴 WebSocket desconectado")
     }
 
     return () => {
       socket.close()
+      socketRef.current = null
     }
-  }, [])
+  }, [queryClient])
 
+  if (isLoading) {
+    return <p className="text-white">Cargando...</p>
+  }
+
+  if (isError) {
+    return <p className="text-red-500">Error cargando datos</p>
+  }
 
   return (
-    <>
-      <Table className="text-white mt-20 w-150 mx-10 md:w-300">
-        <TableCaption>Clients Table</TableCaption>
-        <TableHeader>
-           <TableRow>
-            <TableHead className="text-white">Invoice</TableHead>
-            <TableHead className="text-white">Status</TableHead>
-            <TableHead className="text-white">Method</TableHead>
-            <TableHead className="text-white">Amount</TableHead>
+    <Table className="text-white mt-20 w-150 mx-10 md:w-300">
+      <TableCaption>Clients Table</TableCaption>
+
+      <TableHeader>
+        <TableRow>
+          <TableHead className="text-white">Name</TableHead>
+          <TableHead className="text-white">Email</TableHead>
+          <TableHead className="text-white">Phone</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {clients.map((client) => (
+          <TableRow key={client.email} className="text-white">
+            <TableCell>{client.name}</TableCell>
+            <TableCell>{client.email}</TableCell>
+            <TableCell>{client.phone}</TableCell>
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {messages.map((msg, index) => (
-              <TableRow className="text-white">
-                <TableCell className="font-medium">INV001</TableCell>
-                <TableCell>something</TableCell>
-                <TableCell>Credit Card</TableCell>
-                <TableCell>$250.00</TableCell>
-              </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </>
+        ))}
+      </TableBody>
+    </Table>
   )
 }
-
-export default ClientTable
-

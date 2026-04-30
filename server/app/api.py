@@ -8,9 +8,11 @@ import asyncpg
 import os
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
+from .manager import WebSocketManager
 
 load_dotenv()
 
+manager = WebSocketManager()
 
 SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
@@ -46,8 +48,9 @@ async def websocket_endpoint(ws: WebSocket):
     try:
         while True:
             data = await ws.receive_text()
-            await ws.send_text(f"Echo: {data}")
-    except:
+            await manager.send_message(data)
+    except WebSocketDisconnect:
+        await manager.disconnect(ws)
         print("Client disconnect")
 
 
