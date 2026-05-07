@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 #Tienes que importar la clase no el archivo
-from ..schemas.request.Client import Client
+from ..schemas.request.PydanticClient import Client
 from ..database import models
 from ..database.database import get_db
 

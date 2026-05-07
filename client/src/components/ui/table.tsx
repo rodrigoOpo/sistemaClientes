@@ -1,116 +1,67 @@
 "use client"
 
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+import { useClientsWebSocket } from "@/hooks/useWebsockets"
 
 function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
-    <div
-      data-slot="table-container"
-      className="relative w-full overflow-x-auto"
-    >
-      <table
-        data-slot="table"
-        className={cn("w-full caption-bottom text-sm", className)}
-        {...props}
-      />
+    <div className="relative w-full overflow-x-auto">
+      <table className={cn("w-full text-sm", className)} {...props} />
     </div>
   )
 }
 
-function TableHeader({ className, ...props }: React.ComponentProps<"thead">) {
-  return (
-    <thead
-      data-slot="table-header"
-      className={cn("[&_tr]:border-b", className)}
-      {...props}
-    />
-  )
+function TableHeader(props: React.ComponentProps<"thead">) {
+  return <thead className="[&_tr]:border-b" {...props} />
 }
 
-function TableBody({ className, ...props }: React.ComponentProps<"tbody">) {
-  return (
-    <tbody
-      data-slot="table-body"
-      className={cn("[&_tr:last-child]:border-0", className)}
-      {...props}
-    />
-  )
+function TableBody(props: React.ComponentProps<"tbody">) {
+  return <tbody className="[&_tr:last-child]:border-0" {...props} />
 }
 
-function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
-  return (
-    <tfoot
-      data-slot="table-footer"
-      className={cn(
-        "border-t bg-muted/50 font-medium [&>tr]:last:border-b-0",
-        className
-      )}
-      {...props}
-    />
-  )
+function TableRow(props: React.ComponentProps<"tr">) {
+  return <tr className="border-b" {...props} />
 }
 
-function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
-  return (
-    <tr
-      data-slot="table-row"
-      className={cn(
-        "border-b transition-colors hover:bg-muted/50 has-aria-expanded:bg-muted/50 data-[state=selected]:bg-muted",
-        className
-      )}
-      {...props}
-    />
-  )
+function TableHead(props: React.ComponentProps<"th">) {
+  return <th className="p-2 text-left font-medium" {...props} />
 }
 
-function TableHead({ className, ...props }: React.ComponentProps<"th">) {
-  return (
-    <th
-      data-slot="table-head"
-      className={cn(
-        "h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground [&:has([role=checkbox])]:pr-0",
-        className
-      )}
-      {...props}
-    />
-  )
+function TableCell(props: React.ComponentProps<"td">) {
+  return <td className="p-2" {...props} />
 }
 
-function TableCell({ className, ...props }: React.ComponentProps<"td">) {
-  return (
-    <td
-      data-slot="table-cell"
-      className={cn(
-        "p-2 align-middle whitespace-nowrap [&:has([role=checkbox])]:pr-0",
-        className
-      )}
-      {...props}
-    />
-  )
-}
+export function ClientsTable() {
+  const { clients } = useClientsWebSocket("clientes")
 
-function TableCaption({
-  className,
-  ...props
-}: React.ComponentProps<"caption">) {
   return (
-    <caption
-      data-slot="table-caption"
-      className={cn("mt-4 text-sm text-muted-foreground", className)}
-      {...props}
-    />
-  )
-}
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Nombre</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Teléfono</TableHead>
+        </TableRow>
+      </TableHeader>
 
-export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
+      <TableBody>
+        {clients.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={3}>
+              Esperando clientes...
+            </TableCell>
+          </TableRow>
+        ) : (
+          clients.map((c:any, i:any) => (
+            <TableRow key={i}>
+              <TableCell>{c.name}</TableCell>
+              <TableCell>{c.email}</TableCell>
+              <TableCell>{c.phone}</TableCell>
+            </TableRow>
+          ))
+        )}
+      </TableBody>
+    </Table>
+  )
 }

@@ -1,6 +1,5 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI
 from .routers import Clients
-from .database.models import Client
 from .database.database import Base, engine
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
@@ -8,11 +7,11 @@ import asyncpg
 import os
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
-from .manager import WebSocketManager
+import json
+from app.core.logging import logger
+from app.core.redis import redis_client
 
 load_dotenv()
-
-manager = WebSocketManager()
 
 SQL_DATABASE_URL = os.getenv('SQL_URL_DATABASE')
 
@@ -23,8 +22,10 @@ queue = asyncio.Queue()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await redis_client.connect()
     asyncio.create_task(listener())
     yield
+    await redis_client.disconnect()
 
 app = FastAPI(lifespan=lifespan)
 
@@ -42,25 +43,14 @@ app.add_middleware(
 
 app.include_router(Clients.router)
 
-@app.websocket("/ws")
-async def websocket_endpoint(ws: WebSocket):
-    await ws.accept()
-    try:
-        while True:
-            data = await ws.receive_text()
-            await manager.send_message(data)
-    except WebSocketDisconnect:
-        await manager.disconnect(ws)
-        print("Client disconnect")
-
-
 
 #El listener
 async def listener():
     conn = await asyncpg.connect(SQL_DATABASE_URL)
 
-    async def callback(connection, pid, channel, payload):
+    async def callback(channel, payload):
         print(f"📡 Evento recibido en {channel}: {payload}")
+        await forward_to_redis(channel,payload)
 
     await conn.add_listener("activity_channel", callback)
 
@@ -69,3 +59,18 @@ async def listener():
     while True:
         await asyncio.sleep(3600)  # mantener vivo
 
+
+
+
+
+
+#redis
+async def forward_to_redis(redis_chanel: str, raw_payload: str)-> None:
+    try:
+        payload = json.loads(raw_payload)
+    except json.JSONDecodeError:
+        logger.warning("Non JSON payload from PostgresSQL: %s", raw_payload)
+        return
+
+    await redis_client.publisher.publish(redis_chanel, json.dumps(payload))
+    logger.debug("Forwaded to redis channel '%s' : %s", redis_chanel, payload)

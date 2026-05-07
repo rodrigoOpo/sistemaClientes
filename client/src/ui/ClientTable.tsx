@@ -48,7 +48,7 @@ export default function ClientTable() {
   })
 
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8000/ws")
+    const socket = new WebSocket("ws://sistemaclientes-7ulo.onrender.com/ws")
     socketRef.current = socket
 
     socket.onopen = () => {
