@@ -1,11 +1,11 @@
 import Form from "@/ui/Form";
-import ClientTable from "@/ui/ClientTable";
+import Table from "@/components/ui/table";
 
 export default function Home() {
   return (
     <div className=" text-3xl bg-black md:h-screen">
       <Form/>
-      <ClientTable />
+      <Table />
     </div>
   );
 }

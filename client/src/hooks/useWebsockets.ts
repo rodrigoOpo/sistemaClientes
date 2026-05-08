@@ -1,8 +1,11 @@
+// hooks/useWebSockets.ts
+
 "use client"
 
 import { useEffect, useState } from "react"
+import { realtimeClient } from "@/lib/websocket"
 
-type Client = {
+export type Client = {
   name: string
   email: string
   phone: string
@@ -12,25 +15,25 @@ export function useClientsWebSocket(channel: string) {
   const [clients, setClients] = useState<Client[]>([])
 
   useEffect(() => {
-    const url = `${process.env.NEXT_PUBLIC_WS_URL}/ws/${channel}`
-    const ws = new WebSocket(url)
+    realtimeClient.connect({ channel })
 
-    ws.onmessage = (event) => {
-      try {
-        const data: Client = JSON.parse(event.data)
+    const unsubscribe = realtimeClient.subscribe((data: Client) => {
+      setClients((prev) => {
+        // evitar duplicados por email
+        const exists = prev.some(
+          (client) => client.email === data.email
+        )
 
-        setClients((prev) => [data, ...prev]) // 👈 nueva fila arriba
-      } catch (err) {
-        console.error("WS parse error:", err)
-      }
-    }
+        if (exists) {
+          return prev
+        }
 
-    ws.onerror = (err) => {
-      console.error("WS error:", err)
-    }
+        return [data, ...prev]
+      })
+    })
 
     return () => {
-      ws.close()
+      unsubscribe()
     }
   }, [channel])
 

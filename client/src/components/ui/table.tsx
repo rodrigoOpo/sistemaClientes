@@ -28,8 +28,8 @@ function TableHead(props: React.ComponentProps<"th">) {
   return <th className="p-2 text-left font-medium" {...props} />
 }
 
-function TableCell(props: React.ComponentProps<"td">) {
-  return <td className="p-2" {...props} />
+function TableCell({className, ...props}: React.ComponentProps<"td">) {
+  return <td className={cn ("p-2")} {...props} />
 }
 
 export function ClientsTable() {
@@ -64,4 +64,13 @@ export function ClientsTable() {
       </TableBody>
     </Table>
   )
+}
+
+export {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 }
