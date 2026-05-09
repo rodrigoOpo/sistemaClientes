@@ -41,6 +41,7 @@ class RealtimeClient<T = any> {
     this.manuallyClosed = false
 
     const baseUrl = process.env.NEXT_PUBLIC_WS_URL
+    console.log("base url", baseUrl)
 
     if (!baseUrl) {
       console.error("❌ NEXT_PUBLIC_WS_URL missing")
