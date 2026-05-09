@@ -15,6 +15,9 @@ export function useClientsWebSocket(channel: string) {
   const [clients, setClients] = useState<Client[]>([])
 
   useEffect(() => {
+
+    if(typeof window === "undefined") return
+
     realtimeClient.connect({ channel })
 
     const unsubscribe = realtimeClient.subscribe((data: Client) => {
